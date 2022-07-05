@@ -1,0 +1,68 @@
+<h1>Lessons</h1>
+<input type="button" value="Add" class="btn btn-default" (click)="add()" />
+<table *ngIf="tableMode; else create" class="table table-striped">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>Lesson</td>
+            <td>Teacher</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let t of lessons">
+            <ng-template [ngIf]="lesson.id != t.id" [ngIfElse]="edit">
+                <td>{{t.id}}</td>
+                <td>{{t.name}}</td>
+                <td>{{t.teacher?.fullName}}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" (click)="editLesson(t)">Edit</button>
+                    <button style="margin-left: 10px" class="btn btn-sm btn-danger" (click)="delete(t)">Delete</button>
+                </td>
+            </ng-template>
+        </tr>
+    </tbody>
+</table>
+ 
+<!--шаблон для редактирования-->
+<ng-template #edit>
+    <td>
+        <input type="text" readonly [(ngModel)]="lesson.id" class="form-control" />
+    </td>
+    <td>
+        <input type="text" [(ngModel)]="lesson.name" class="form-control" />
+    </td>
+    <td>
+        <select class="form-select" [(ngModel)]="lesson.teacherID">
+            <option [ngValue]="null" disabled>Select Teacher</option>
+            <option *ngFor="let teacher of teachers" [ngValue]="teacher.id">{{teacher.fullName}}</option>
+        </select>
+    </td>
+    <td>
+        <input type="button" value="Сохранить" (click)="save(lesson)" class="btn btn-sm btn-success" />
+        <input type="button" value="Отмена" (click)="cancel()" class="btn btn-sm btn-warning" />
+    </td>
+</ng-template>
+
+<!--шаблон для добавления-->
+<ng-template #create>
+    <div class="form-group">
+        <label>ID</label>
+        <input type="text" readonly [(ngModel)]="lesson.id" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Lesson name</label>
+        <input type="text" [(ngModel)]="lesson.name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Teacher</label>
+         <select class="form-select" [(ngModel)]="lesson.teacherID">
+            <option [ngValue]="null" disabled>Select Teacher</option>
+            <option *ngFor="let teacher of teachers" [ngValue]="teacher.id">{{teacher.fullName}}</option>
+        </select>
+    </div>
+    <div class="form-group" style="margin-top:10px">
+        <input type="button" value="Сохранить" (click)="save(lesson)" class="btn btn-sm btn-success" />
+        <input type="button" value="Отмена" (click)="cancel()" class="btn btn-sm btn-warning" />
+    </div>
+</ng-template>
