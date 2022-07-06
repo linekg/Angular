@@ -1,0 +1,65 @@
+<h1>{{student?.fullName}} : grades</h1>
+<a href="/students" class="btn btn-sm btn-primary">Go to students</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Lesson</th>
+            <th>Grade</th>
+            <th>Comment</th>
+            <td>
+                <button type="button" class="btn btn-primary" (click)="create(modal)">Add grade</button>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let g of grades">
+                <td>{{g.id}}</td>
+                <td><b>{{g.lesson.name}}</b> ({{g.lesson.teacher.fullName}})</td>
+                <td>{{g.value}}</td>
+                <td>{{g.comment}}</td>
+                <td>
+                    <button style="margin-left: 10px" class="btn btn-sm btn-primary" (click)="editGrade(g, modal)">Edit</button>
+                    <button style="margin-left: 10px" class="btn btn-sm btn-danger" (click)="delete(g)">Delete</button>
+                </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<ng-template #modal>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Grade</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label>Lesson</label>
+            <select class="form-select form-control" [(ngModel)]="grade.lessonID">
+                <option [ngValue]="null" disabled>Select Lesson</option>
+                <option *ngFor="let lesson of lessons" [ngValue]="lesson.id">{{lesson.name}} ({{lesson.teacher?.fullName}})</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Grade value</label>
+            <input type="number" [(ngModel)]="grade.value" class="form-control" min="2" max="5" step="1"/>
+        </div>
+        <div class="form-group">
+            <label>Comment</label>
+            <input type="text" [(ngModel)]="grade.comment" class="form-control"/>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col">
+                <input type="button" value="Save" (click)="save()" class="btn btn-success" />
+            </div>
+            <div class="col">
+                <input type="button" value="Cancel" (click)="cancel()" class="btn btn-warning" />
+            </div>
+        </div>
+    </div>
+  </ng-template>

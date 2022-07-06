@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef} from '@angular/core';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { StudentService } from './student.service';
 import { Student } from './student';
  
@@ -11,9 +12,8 @@ export class StudentComponent implements OnInit {
  
     student: Student = new Student();   // изменяемый товар
     students: Student[];                // массив товаров
-    tableMode: boolean = true;          // табличный режим
- 
-    constructor(private dataService: StudentService) { }
+    modalRef: BsModalRef;
+    constructor(private dataService: StudentService, private modalService: BsModalService) { }
  
     ngOnInit() {
         this.loadStudents();    // загрузка данных при старте компонента  
@@ -28,12 +28,9 @@ export class StudentComponent implements OnInit {
     }
     // сохранение данных
     save() {
-        console.warn(this.student);
-
         if (this.student.id == null) {
             this.dataService.createStudent(this.student)
-                //.subscribe((data: Teacher) => this.teachers.push(data));
-                .subscribe({next: data=>{
+                .subscribe({next: (data:Student)=>{
                     this.students.push(data)
                 },
             error:error=>{
@@ -43,23 +40,27 @@ export class StudentComponent implements OnInit {
             });
         } else {
             this.dataService.updateStudent(this.student)
-                .subscribe(data => this.loadStudents());
+                .subscribe(data => {this.loadStudents(); });
         }
-        this.cancel();
+        
+        this.modalRef.hide();
     }
-    editStudent(tr: Student) {
+    editStudent(tr: Student, template: TemplateRef<any>) {
         this.student = tr;
+        this.modalRef = this.modalService.show(template);
     }
     cancel() {
-        this.student = new Student();
-        this.tableMode = true;
+        this.student = null;
+        this.modalRef.hide();
+        this.loadStudents();
     }
     delete(t: Student) {
         this.dataService.deleteStudent(t.id)
             .subscribe(data => this.loadStudents());
     }
-    add() {
-        this.cancel();
-        this.tableMode = false;
-    }
+    createStudent(template: TemplateRef<any>) {
+        this.student = new Student();
+        
+        this.modalRef = this.modalService.show(template);
+      }
 }

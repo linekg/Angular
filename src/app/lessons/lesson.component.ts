@@ -45,7 +45,7 @@ export class LessonComponent implements OnInit {
             this.dataService.createLesson(this.lesson)
                 //.subscribe((data: Teacher) => this.teachers.push(data));
                 .subscribe({next: data=>{
-                    this.lessons.push(data)
+                    this.loadLessons()
                 },
             error:error=>{
                 
